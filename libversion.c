@@ -28,10 +28,10 @@
 
 PG_MODULE_MAGIC;
 
-PG_FUNCTION_INFO_V1(version_compare);
+PG_FUNCTION_INFO_V1(wrap_version_compare_simple);
 
 Datum
-version_compare(PG_FUNCTION_ARGS)
+wrap_version_compare_simple(PG_FUNCTION_ARGS)
 {
     text* t1 = PG_GETARG_TEXT_P(0);
     text* t2 = PG_GETARG_TEXT_P(1);
