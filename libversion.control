@@ -1,0 +1,3 @@
+comment = 'libversion extension'
+default_version = '1.0.0'
+relocatable = true
