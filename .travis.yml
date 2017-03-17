@@ -15,5 +15,4 @@ before_install:
 script:
   - make
   - sudo make install
-  - make installcheck || true
-  - cat results/libversion_test.out || true
+  - make installcheck
