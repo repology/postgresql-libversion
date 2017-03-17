@@ -1,0 +1,13 @@
+language: python
+sudo: true
+dist: trusty
+services:
+  - postgresql
+before_script:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq postgresql-server-dev-all postgresql-common
+  - git clone --depth=1 https://github.com/repology/libversion.git && ( cd libversion && cmake . && make && sudo make install )
+script:
+  - make
+  - sudo make install
+  - make installcheck
