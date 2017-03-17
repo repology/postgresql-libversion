@@ -12,6 +12,16 @@ a singe function taking two version strings as text arguments and
 returning integer -1 if second version is greater, 1 if first version
 is greated and 0 if versions are equal.
 
+```
+postgres=# \df version_compare_simple
+                                 List of functions
+ Schema |          Name          | Result data type | Argument data types |  Type  
+--------+------------------------+------------------+---------------------+--------
+ public | version_compare_simple | integer          | text, text          | normal
+(1 row)
+
+```
+
 ## Synopsis
 
 ```
