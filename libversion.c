@@ -36,25 +36,24 @@ wrap_version_compare_simple(PG_FUNCTION_ARGS)
 	text* t1 = PG_GETARG_TEXT_P(0);
 	text* t2 = PG_GETARG_TEXT_P(1);
 
-	char* buffer;
-	char* v2;
+	size_t length1 = VARSIZE(t1) - VARHDRSZ;
+	size_t length2 = VARSIZE(t2) - VARHDRSZ;
 
-	size_t buf_length = VARSIZE(t1) + 1 + VARSIZE(t2) + 1;
+	char* v1 = (char*)palloc(length1 + 1);
+	char* v2 = (char*)palloc(length2 + 1);
 
 	int result;
 
-	buffer = (char*)palloc(buf_length);
+	memcpy((void*)v1, (void*)VARDATA(t1), length1);
+	v1[length1] = '\0';
 
-	memcpy((void*)buffer, (void*)VARDATA(t1), VARSIZE(t1));
-	buffer[VARSIZE(t1)] = '\0';
-	v2 = buffer + VARSIZE(t1) + 1;
+	memcpy((void*)v2, (void*)VARDATA(t2), length2);
+	v2[length2] = '\0';
 
-	memcpy((void*)v2, (void*)VARDATA(t2), VARSIZE(t2));
-	v2[VARSIZE(t2)] = '\0';
+	result = version_compare_simple(v1, v2);
 
-	result = version_compare_simple(buffer, v2);
-
-	pfree(buffer);
+	pfree(v1);
+	pfree(v2);
 
 	PG_RETURN_INT32((int32)result);
 }
