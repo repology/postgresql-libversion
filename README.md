@@ -15,11 +15,10 @@ is greated and 0 if versions are equal.
 ```
 postgres=# \df version_compare_simple
                                  List of functions
- Schema |          Name          | Result data type | Argument data types |  Type  
+ Schema |          Name          | Result data type | Argument data types |  Type
 --------+------------------------+------------------+---------------------+--------
  public | version_compare_simple | integer          | text, text          | normal
 (1 row)
-
 ```
 
 ## Synopsis
@@ -28,11 +27,10 @@ postgres=# \df version_compare_simple
 postgres=# create extension libversion;
 CREATE EXTENSION
 postgres=# select version_compare_simple('0.9', '1.0');
- version_compare_simple 
+ version_compare_simple
 ------------------------
                      -1
 (1 row)
-
 ```
 
 ## Installation
