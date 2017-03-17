@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/repology/postgresql-libversion.svg?branch=master)](https://travis-ci.org/repology/postgresql-libversion)
 
-PostgreSQL extension to support version comparison through [libversion](https://github.com/repology/libversion).
+PostgreSQL extension with support for version string comparison through [libversion](https://github.com/repology/libversion).
 
 ## API
 
