@@ -3,8 +3,8 @@ DATA = libversion--1.0.0.sql
 MODULE_big = libversion
 REGRESS = libversion_test
 
-PG_CPPFLAGS = `pkg-config --cflags libversion` -I bar
-SHLIB_LINK += `pkg-config --libs libversion` -L foo
+PG_CPPFLAGS = `pkg-config --cflags libversion`
+SHLIB_LINK = `pkg-config --libs libversion`
 
 OBJS = libversion.o
 
