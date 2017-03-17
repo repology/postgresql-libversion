@@ -1,2 +1,5 @@
 libversion.o
 libversion.so
+regression.diffs
+regression.out
+results/

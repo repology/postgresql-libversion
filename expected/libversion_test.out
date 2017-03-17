@@ -1,0 +1,37 @@
+CREATE EXTENSION libversion;
+SELECT version_compare_simple('0.1', '1.0');
+ version_compare_simple 
+------------------------
+                     -1
+(1 row)
+
+SELECT version_compare_simple('1.0', '0.1');
+ version_compare_simple 
+------------------------
+                      1
+(1 row)
+
+SELECT version_compare_simple('1.0', '1.0');
+ version_compare_simple 
+------------------------
+                      0
+(1 row)
+
+SELECT version_compare_simple('1.0', '1.0.0');
+ version_compare_simple 
+------------------------
+                      0
+(1 row)
+
+SELECT version_compare_simple('1.0', '1.0a');
+ version_compare_simple 
+------------------------
+                     -1
+(1 row)
+
+SELECT version_compare_simple('1.0', '1..0');
+ version_compare_simple 
+------------------------
+                      0
+(1 row)
+
