@@ -16,3 +16,4 @@ script:
   - make
   - sudo make install
   - make installcheck
+  - if test -e regression.diffs; then cat regression.diffs; fi
