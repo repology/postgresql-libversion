@@ -51,6 +51,7 @@ installed.
 ## Author
 
 * [Dmitry Marakasov](https://github.com/AMDmi3) <amdmi3@amdmi3.ru>
+* Contains code from PostgreSQL 9.6 citext extension
 
 ## License
 
