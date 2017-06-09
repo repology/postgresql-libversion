@@ -6,31 +6,28 @@ PostgreSQL extension with support for version string comparison through [libvers
 
 ## API
 
-The extension exposes whole libversion
-[API](https://github.com/repology/libversion#api) which is currently
-a singe function taking two version strings as text arguments and
-returning integer -1 if second version is greater, 1 if first version
-is greated and 0 if versions are equal.
+The extension implements:
 
-```
-postgres=# \df version_compare_simple
-                                 List of functions
- Schema |          Name          | Result data type | Argument data types |  Type
---------+------------------------+------------------+---------------------+--------
- public | version_compare_simple | integer          | text, text          | normal
-(1 row)
-```
+* `version_compare_simple` funcitions which takes two strings,
+  compares them as versions and returns integer -1 if second version
+  is greater, 1 if first version is greated and 0 if versions are
+  equal.
+* `versiontext` type which behaves just like `text`, but compares
+  as version strings.
 
 ## Synopsis
 
 ```
-postgres=# create extension libversion;
+postgres=# CREATE EXTENSION libversion;
 CREATE EXTENSION
-postgres=# select version_compare_simple('0.9', '1.0');
- version_compare_simple
-------------------------
-                     -1
-(1 row)
+postgres=# SELECT version_compare_simple('1.10', '1.2');
+1
+postgres=# SELECT version_compare_simple('1.0', '1.0.0');
+0
+postgres=# SELECT '1.10'::versiontext > '1.2'::versiontext;
+t
+postgres=# SELECT '1.0'::versiontext = '1.0.0'::versiontext;
+t
 ```
 
 ## Installation
