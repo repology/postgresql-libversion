@@ -1,4 +1,4 @@
-# postgres-libversion
+# postgresql-libversion
 
 [![Build Status](https://travis-ci.org/repology/postgresql-libversion.svg?branch=master)](https://travis-ci.org/repology/postgresql-libversion)
 
@@ -8,9 +8,9 @@ PostgreSQL extension with support for version string comparison through [libvers
 
 The extension implements:
 
-* `version_compare_simple` funcitions which takes two strings,
+* `version_compare_simple` function which takes two strings,
   compares them as versions and returns integer -1 if second version
-  is greater, 1 if first version is greated and 0 if versions are
+  is greater, 1 if first version is greater and 0 if versions are
   equal.
 * `versiontext` type which behaves just like `text`, but compares
   as version strings.
