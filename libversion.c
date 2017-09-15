@@ -71,7 +71,7 @@ wrap_version_compare_simple(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
 
-    PG_RETURN_INT32(result);
+	PG_RETURN_INT32(result);
 }
 
 /*
