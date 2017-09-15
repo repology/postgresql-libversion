@@ -32,7 +32,7 @@
 #include "utils/builtins.h"
 #include "utils/formatting.h"
 
-#include <libversion/compare.h>
+#include <libversion/version.h>
 
 PG_MODULE_MAGIC;
 
