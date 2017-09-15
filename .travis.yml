@@ -18,3 +18,14 @@ script:
   - sudo make install
   - make installcheck
   - if test -e regression.diffs; then cat regression.diffs; fi
+
+  - psql -U postgres -c "CREATE DATABASE ext_test1;"
+  - psql -U postgres -d ext_test1 -c "CREATE EXTENSION libversion"
+  - psql -U postgres -d ext_test1 -c "SELECT pg_catalog.pg_describe_object(classid, objid, 0) FROM pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND refobjid = (SELECT oid FROM pg_catalog.pg_extension WHERE extname='libversion') and deptype='e' order by 1" > extension_contents.a
+
+  - psql -U postgres -c "CREATE DATABASE ext_test2;"
+  - psql -U postgres -d ext_test2 -c "CREATE EXTENSION libversion VERSION '1.0.0'"
+  - psql -U postgres -d ext_test2 -c "ALTER EXTENSION libversion UPDATE"
+  - psql -U postgres -d ext_test2 -c "SELECT pg_catalog.pg_describe_object(classid, objid, 0) FROM pg_catalog.pg_depend WHERE refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND refobjid = (SELECT oid FROM pg_catalog.pg_extension WHERE extname='libversion') and deptype='e' order by 1" > extension_contents.b
+
+  - if cmp -s extension_contents.a extension_contents.b; then echo "Extension update check passed"; else echo "Extension update sanity check failed!"; diff -u extension_contents.a extension_contents.b; false; fi
