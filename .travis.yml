@@ -7,10 +7,9 @@ compiler:
 services:
   - postgresql
 before_install:
-  - export LIBVERSION_VER=2.2.0
   - sudo apt-get update -qq
   - sudo apt-get install -qq postgresql-server-dev-all postgresql-common
-  - wget -qO- https://github.com/repology/libversion/archive/$LIBVERSION_VER.tar.gz | tar -xzf- && ( cd libversion-$LIBVERSION_VER && cmake . && make && sudo make install )
+  - wget -qO- https://github.com/repology/libversion/archive/master.tar.gz | tar -xzf- && ( cd libversion-master && cmake . && make && sudo make install && sudo ldconfig )
   - sudo /etc/init.d/postgresql stop
   - sudo /etc/init.d/postgresql start $(pg_config --version | sed -e 's|^[^0-9]*\([0-9]\.[0-9]\).*$|\1|') # run the same version to which we install the extension
 script:
