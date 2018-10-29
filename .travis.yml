@@ -13,8 +13,12 @@ addons:
 env:
   global:
     - PGPORT=5433
+  matrix:
+    - LIBVERSION=master
+    - LIBVERSION=2.7.0
+    - LIBVERSION=2.6.0
 before_install:
-  - wget -qO- https://github.com/repology/libversion/archive/master.tar.gz | tar -xzf- && ( cd libversion-master && cmake . && make && sudo make install && sudo ldconfig )
+  - wget -qO- https://github.com/repology/libversion/archive/$LIBVERSION.tar.gz | tar -xzf- && ( cd libversion-$LIBVERSION && cmake . && make && sudo make install && sudo ldconfig )
 script:
   - make
   - sudo make install
