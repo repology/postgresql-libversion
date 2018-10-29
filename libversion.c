@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dmitry Marakasov <amdmi3@amdmi3.ru>
+ * Copyright (c) 2017-2018 Dmitry Marakasov <amdmi3@amdmi3.ru>
  *
  * Contains code from PostgreSQL 9.6 citext extension:
  *
@@ -41,12 +41,46 @@ PG_MODULE_MAGIC;
  */
 
 static int32
-versiontextcmp(text *left, text *right)
+versiontextcmp2(text *left, text *right)
 {
 	char* cleft = pnstrdup(VARDATA_ANY(left), VARSIZE_ANY_EXHDR(left));
 	char* cright = pnstrdup(VARDATA_ANY(right), VARSIZE_ANY_EXHDR(right));
 
-	int32 result = (int32)version_compare_simple(cleft, cright);
+	int32 result = (int32)
+#if defined(LIBVERSION_VERSION_ATLEAST)
+# if	LIBVERSION_VERSION_ATLEAST(2, 7, 0)
+		version_compare2(cleft, cright)
+# else
+		version_compare_simple(cleft, cright)
+# endif
+#else
+		version_compare_simple(cleft, cright)
+#endif
+	;
+
+	pfree(cleft);
+	pfree(cright);
+
+	return result;
+}
+
+static int32
+versiontextcmp4(text *left, text *right, int32 left_flags, int32 right_flags)
+{
+	char* cleft = pnstrdup(VARDATA_ANY(left), VARSIZE_ANY_EXHDR(left));
+	char* cright = pnstrdup(VARDATA_ANY(right), VARSIZE_ANY_EXHDR(right));
+
+	int32 result = (int32)
+#if defined(LIBVERSION_VERSION_ATLEAST)
+# if	LIBVERSION_VERSION_ATLEAST(2, 7, 0)
+		version_compare4(cleft, cright, left_flags, right_flags)
+# else
+		version_compare_flags2(cleft, cright, left_flags, right_flags)
+# endif
+#else
+		version_compare_flags2(cleft, cright, left_flags, right_flags)
+#endif
+	;
 
 	pfree(cleft);
 	pfree(cright);
@@ -66,12 +100,62 @@ wrap_version_compare_simple(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	int32 result = versiontextcmp(left, right);
+	int32 result = versiontextcmp2(left, right);
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
 
 	PG_RETURN_INT32(result);
+}
+
+PG_FUNCTION_INFO_V1(wrap_version_compare2);
+
+Datum
+wrap_version_compare2(PG_FUNCTION_ARGS)
+{
+	text *left = PG_GETARG_TEXT_PP(0);
+	text *right = PG_GETARG_TEXT_PP(1);
+
+	int32 result = versiontextcmp2(left, right);
+
+	PG_FREE_IF_COPY(left, 0);
+	PG_FREE_IF_COPY(right, 1);
+
+	PG_RETURN_INT32(result);
+}
+
+PG_FUNCTION_INFO_V1(wrap_version_compare4);
+
+Datum
+wrap_version_compare4(PG_FUNCTION_ARGS)
+{
+	text *left = PG_GETARG_TEXT_PP(0);
+	text *right = PG_GETARG_TEXT_PP(1);
+	int left_flags = PG_GETARG_INT32(2);
+	int right_flags = PG_GETARG_INT32(3);
+
+	int32 result = versiontextcmp4(left, right, left_flags, right_flags);
+
+	PG_FREE_IF_COPY(left, 0);
+	PG_FREE_IF_COPY(right, 1);
+
+	PG_RETURN_INT32(result);
+}
+
+PG_FUNCTION_INFO_V1(wrap_VERSIONFLAG_P_IS_PATCH);
+
+Datum
+wrap_VERSIONFLAG_P_IS_PATCH(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_INT32(VERSIONFLAG_P_IS_PATCH);
+}
+
+PG_FUNCTION_INFO_V1(wrap_VERSIONFLAG_ANY_IS_PATCH);
+
+Datum
+wrap_VERSIONFLAG_ANY_IS_PATCH(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_INT32(VERSIONFLAG_ANY_IS_PATCH);
 }
 
 /*
@@ -95,7 +179,7 @@ versiontext_cmp(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	int32 result = versiontextcmp(left, right);
+	int32 result = versiontextcmp2(left, right);
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -132,7 +216,7 @@ versiontext_eq(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	bool result = versiontextcmp(left, right) == 0;
+	bool result = versiontextcmp2(left, right) == 0;
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -148,7 +232,7 @@ versiontext_ne(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	bool result = versiontextcmp(left, right) != 0;
+	bool result = versiontextcmp2(left, right) != 0;
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -164,7 +248,7 @@ versiontext_lt(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	bool result = versiontextcmp(left, right) < 0;
+	bool result = versiontextcmp2(left, right) < 0;
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -180,7 +264,7 @@ versiontext_le(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	bool result = versiontextcmp(left, right) <= 0;
+	bool result = versiontextcmp2(left, right) <= 0;
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -196,7 +280,7 @@ versiontext_gt(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	bool result = versiontextcmp(left, right) > 0;
+	bool result = versiontextcmp2(left, right) > 0;
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -212,7 +296,7 @@ versiontext_ge(PG_FUNCTION_ARGS)
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
 
-	bool result = versiontextcmp(left, right) >= 0;
+	bool result = versiontextcmp2(left, right) >= 0;
 
 	PG_FREE_IF_COPY(left, 0);
 	PG_FREE_IF_COPY(right, 1);
@@ -233,7 +317,7 @@ versiontext_smaller(PG_FUNCTION_ARGS)
 {
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
-	text *result = versiontextcmp(left, right) < 0 ? left : right;
+	text *result = versiontextcmp2(left, right) < 0 ? left : right;
 
 	PG_RETURN_TEXT_P(result);
 }
@@ -245,6 +329,6 @@ versiontext_larger(PG_FUNCTION_ARGS)
 {
 	text *left = PG_GETARG_TEXT_PP(0);
 	text *right = PG_GETARG_TEXT_PP(1);
-	text *result = versiontextcmp(left, right) > 0 ? left : right;
+	text *result = versiontextcmp2(left, right) > 0 ? left : right;
 	PG_RETURN_TEXT_P(result);
 }
