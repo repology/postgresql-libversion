@@ -8,10 +8,15 @@ PostgreSQL extension with support for version string comparison through [libvers
 
 The extension implements:
 
-* `version_compare_simple` function which takes two strings,
-  compares them as versions and returns integer -1 if second version
-  is greater, 1 if first version is greater and 0 if versions are
-  equal.
+* `version_compare2(text, text)` function which takes two strings, compares
+  them as versions and returns integer -1 if second version is greater, 1
+  if first version is greater and 0 if versions are equal.
+* `version_compare4(text, text, int, int)`, which does the same, additionally
+  allowing to specify flags for either side of comparison to tune it.
+  See [libversion documentation](https://github.com/repology/libversion#api)
+  for complete description of flags. Here, flag values are provided as functions:
+  * `VERSIONFLAG_P_IS_PATCH()`,
+  * `VERSIONFLAG_ANY_IS_PATCH()`
 * `versiontext` type which behaves just like `text`, but compares
   as version strings.
 
@@ -20,10 +25,12 @@ The extension implements:
 ```
 postgres=# CREATE EXTENSION libversion;
 CREATE EXTENSION
-postgres=# SELECT version_compare_simple('1.10', '1.2');
+postgres=# SELECT version_compare2('1.10', '1.2');
 1
-postgres=# SELECT version_compare_simple('1.0', '1.0.0');
+postgres=# SELECT version_compare2('1.0', '1.0.0');
 0
+postgres=# SELECT version_compare4('1.0p1', '1.0', VERSIONFLAG_P_IS_PATCH(), 0);
+1
 postgres=# SELECT '1.10'::versiontext > '1.2'::versiontext;
 t
 postgres=# SELECT '1.0'::versiontext = '1.0.0'::versiontext;
