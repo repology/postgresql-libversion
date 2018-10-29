@@ -2,38 +2,107 @@ CREATE EXTENSION libversion;
 --
 -- Test standalone functions
 --
--- version_compare_simple
+-- version_compare_simple (deprecated)
 SELECT version_compare_simple('0.1', '1.0') AS t;
  t  
 ----
  -1
 (1 row)
 
-SELECT version_compare_simple('1.0', '0.1') AS t;
- t 
----
- 1
-(1 row)
-
-SELECT version_compare_simple('1.0', '1.0') AS t;
- t 
----
- 0
-(1 row)
-
-SELECT version_compare_simple('1.0', '1.0.0') AS t;
- t 
----
- 0
-(1 row)
-
-SELECT version_compare_simple('1.0', '1.0a') AS t;
+-- version_compare2
+SELECT version_compare2('0.1', '1.0') AS t;
  t  
 ----
  -1
 (1 row)
 
-SELECT version_compare_simple('1.0', '1..0') AS t;
+SELECT version_compare2('1.0', '0.1') AS t;
+ t 
+---
+ 1
+(1 row)
+
+SELECT version_compare2('1.0', '1.0') AS t;
+ t 
+---
+ 0
+(1 row)
+
+SELECT version_compare2('1.0', '1.0.0') AS t;
+ t 
+---
+ 0
+(1 row)
+
+SELECT version_compare2('1.0', '1.0a') AS t;
+ t  
+----
+ -1
+(1 row)
+
+SELECT version_compare2('1.0', '1..0') AS t;
+ t 
+---
+ 0
+(1 row)
+
+-- flags
+SELECT VERSIONFLAG_P_IS_PATCH();
+ versionflag_p_is_patch 
+------------------------
+                      3
+(1 row)
+
+SELECT VERSIONFLAG_ANY_IS_PATCH();
+ versionflag_any_is_patch 
+--------------------------
+                       12
+(1 row)
+
+-- version_compare4
+SELECT version_compare4('1.0p1', '1.0p1', 0, 0) AS t;
+ t 
+---
+ 0
+(1 row)
+
+SELECT version_compare4('1.0p1', '1.0p1', 0, VERSIONFLAG_P_IS_PATCH()) AS t;
+ t  
+----
+ -1
+(1 row)
+
+SELECT version_compare4('1.0p1', '1.0p1', VERSIONFLAG_P_IS_PATCH(), 0) AS t;
+ t 
+---
+ 1
+(1 row)
+
+SELECT version_compare4('1.0p1', '1.0p1', VERSIONFLAG_P_IS_PATCH(), VERSIONFLAG_P_IS_PATCH()) AS t;
+ t 
+---
+ 0
+(1 row)
+
+SELECT version_compare4('1.0h1', '1.0h1', 0, 0) AS t;
+ t 
+---
+ 0
+(1 row)
+
+SELECT version_compare4('1.0h1', '1.0h1', 0, VERSIONFLAG_ANY_IS_PATCH()) AS t;
+ t  
+----
+ -1
+(1 row)
+
+SELECT version_compare4('1.0h1', '1.0h1', VERSIONFLAG_ANY_IS_PATCH(), 0) AS t;
+ t 
+---
+ 1
+(1 row)
+
+SELECT version_compare4('1.0h1', '1.0h1', VERSIONFLAG_ANY_IS_PATCH(), VERSIONFLAG_ANY_IS_PATCH()) AS t;
  t 
 ---
  0
