@@ -1,5 +1,6 @@
 language: c
-sudo: true
+dist: xenial
+sudo: required
 compiler:
   - gcc
   - clang
@@ -7,12 +8,8 @@ addons:
   postgresql: "10"
   apt:
     packages:
-      - postgresql-10
-      - postgresql-client-10
       - postgresql-server-dev-10
 env:
-  global:
-    - PGPORT=5433
   matrix:
     - LIBVERSION=master
     - LIBVERSION=2.7.0
