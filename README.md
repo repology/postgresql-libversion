@@ -17,6 +17,8 @@ The extension implements:
   for complete description of flags. Here, flag values are provided as functions:
   * `VERSIONFLAG_P_IS_PATCH()`,
   * `VERSIONFLAG_ANY_IS_PATCH()`
+  * `VERSIONFLAG_LOWER_BOUND()`
+  * `VERSIONFLAG_UPPER_BOUND()`
 * `versiontext` type which behaves just like `text`, but compares
   as version strings.
 

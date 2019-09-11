@@ -1,5 +1,5 @@
 EXTENSION = libversion
-DATA = libversion--1.0.0.sql libversion--1.0.0--1.1.0.sql libversion--1.1.0--1.2.0.sql libversion--1.2.0.sql
+DATA = libversion--1.0.0.sql libversion--1.0.0--1.1.0.sql libversion--1.1.0--1.2.0.sql libversion--1.2.0--2.0.0.sql libversion--2.0.0.sql
 
 MODULE_big = libversion
 REGRESS = libversion

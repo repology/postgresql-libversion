@@ -2,13 +2,6 @@ CREATE EXTENSION libversion;
 --
 -- Test standalone functions
 --
--- version_compare_simple (deprecated)
-SELECT version_compare_simple('0.1', '1.0') AS t;
- t  
-----
- -1
-(1 row)
-
 -- version_compare2
 SELECT version_compare2('0.1', '1.0') AS t;
  t  
@@ -44,19 +37,6 @@ SELECT version_compare2('1.0', '1..0') AS t;
  t 
 ---
  0
-(1 row)
-
--- flags
-SELECT VERSIONFLAG_P_IS_PATCH();
- versionflag_p_is_patch 
-------------------------
-                      3
-(1 row)
-
-SELECT VERSIONFLAG_ANY_IS_PATCH();
- versionflag_any_is_patch 
---------------------------
-                       12
 (1 row)
 
 -- version_compare4
@@ -106,6 +86,30 @@ SELECT version_compare4('1.0h1', '1.0h1', VERSIONFLAG_ANY_IS_PATCH(), VERSIONFLA
  t 
 ---
  0
+(1 row)
+
+SELECT version_compare4('1.0alpha1', '1.0', 0, 0) AS t;
+ t  
+----
+ -1
+(1 row)
+
+SELECT version_compare4('1.0alpha1', '1.0', 0, VERSIONFLAG_LOWER_BOUND()) AS t;
+ t 
+---
+ 1
+(1 row)
+
+SELECT version_compare4('1.0patch1', '1.0', 0, 0) AS t;
+ t 
+---
+ 1
+(1 row)
+
+SELECT version_compare4('1.0patch1', '1.0', 0, VERSIONFLAG_UPPER_BOUND()) AS t;
+ t  
+----
+ -1
 (1 row)
 
 --

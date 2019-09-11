@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Dmitry Marakasov <amdmi3@amdmi3.ru>
+ * Copyright (c) 2017-2019 Dmitry Marakasov <amdmi3@amdmi3.ru>
  *
  * Contains code from PostgreSQL 9.6 citext extension:
  *
@@ -47,15 +47,7 @@ versiontextcmp2(text *left, text *right)
 	char* cright = pnstrdup(VARDATA_ANY(right), VARSIZE_ANY_EXHDR(right));
 
 	int32 result = (int32)
-#if defined(LIBVERSION_VERSION_ATLEAST)
-# if	LIBVERSION_VERSION_ATLEAST(2, 7, 0)
 		version_compare2(cleft, cright)
-# else
-		version_compare_simple(cleft, cright)
-# endif
-#else
-		version_compare_simple(cleft, cright)
-#endif
 	;
 
 	pfree(cleft);
@@ -71,15 +63,7 @@ versiontextcmp4(text *left, text *right, int32 left_flags, int32 right_flags)
 	char* cright = pnstrdup(VARDATA_ANY(right), VARSIZE_ANY_EXHDR(right));
 
 	int32 result = (int32)
-#if defined(LIBVERSION_VERSION_ATLEAST)
-# if	LIBVERSION_VERSION_ATLEAST(2, 7, 0)
 		version_compare4(cleft, cright, left_flags, right_flags)
-# else
-		version_compare_flags2(cleft, cright, left_flags, right_flags)
-# endif
-#else
-		version_compare_flags2(cleft, cright, left_flags, right_flags)
-#endif
 	;
 
 	pfree(cleft);
@@ -156,6 +140,22 @@ Datum
 wrap_VERSIONFLAG_ANY_IS_PATCH(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_INT32(VERSIONFLAG_ANY_IS_PATCH);
+}
+
+PG_FUNCTION_INFO_V1(wrap_VERSIONFLAG_LOWER_BOUND);
+
+Datum
+wrap_VERSIONFLAG_LOWER_BOUND(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_INT32(VERSIONFLAG_LOWER_BOUND);
+}
+
+PG_FUNCTION_INFO_V1(wrap_VERSIONFLAG_UPPER_BOUND);
+
+Datum
+wrap_VERSIONFLAG_UPPER_BOUND(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_INT32(VERSIONFLAG_UPPER_BOUND);
 }
 
 /*

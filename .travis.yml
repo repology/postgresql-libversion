@@ -12,10 +12,6 @@ addons:
 env:
   matrix:
     - LIBVERSION=master
-    - LIBVERSION=2.9.1
-    - LIBVERSION=2.8.2
-    - LIBVERSION=2.7.0
-    - LIBVERSION=2.6.0
 before_install:
   - wget -qO- https://github.com/repology/libversion/archive/$LIBVERSION.tar.gz | tar -xzf- && ( cd libversion-$LIBVERSION && cmake . && make && sudo make install && sudo ldconfig )
 script:
