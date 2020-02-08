@@ -24,19 +24,24 @@ The extension implements:
 
 ## Synopsis
 
-```
-postgres=# CREATE EXTENSION libversion;
-CREATE EXTENSION
-postgres=# SELECT version_compare2('1.10', '1.2');
-1
-postgres=# SELECT version_compare2('1.0', '1.0.0');
-0
-postgres=# SELECT version_compare4('1.0p1', '1.0', VERSIONFLAG_P_IS_PATCH(), 0);
-1
-postgres=# SELECT '1.10'::versiontext > '1.2'::versiontext;
-t
-postgres=# SELECT '1.0'::versiontext = '1.0.0'::versiontext;
-t
+```sql
+CREATE EXTENSION libversion;
+# CREATE EXTENSION
+
+SELECT version_compare2('1.10', '1.2');
+# 1
+
+SELECT version_compare2('1.0', '1.0.0');
+# 0
+
+SELECT version_compare4('1.0p1', '1.0', VERSIONFLAG_P_IS_PATCH(), 0);
+# 1
+
+SELECT '1.10'::versiontext > '1.2'::versiontext;
+# t
+
+SELECT '1.0'::versiontext = '1.0.0'::versiontext;
+# t
 ```
 
 ## Installation
