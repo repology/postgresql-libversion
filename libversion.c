@@ -110,6 +110,10 @@ wrap_version_compare4(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(result);
 }
 
+/*
+ * Constant wrappers
+ */
+
 PG_FUNCTION_INFO_V1(wrap_VERSIONFLAG_P_IS_PATCH);
 
 Datum
