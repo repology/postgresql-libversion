@@ -76,22 +76,6 @@ versiontextcmp4(text *left, text *right, int32 left_flags, int32 right_flags)
  * Standalone functions
  */
 
-PG_FUNCTION_INFO_V1(wrap_version_compare_simple);
-
-Datum
-wrap_version_compare_simple(PG_FUNCTION_ARGS)
-{
-	text *left = PG_GETARG_TEXT_PP(0);
-	text *right = PG_GETARG_TEXT_PP(1);
-
-	int32 result = versiontextcmp2(left, right);
-
-	PG_FREE_IF_COPY(left, 0);
-	PG_FREE_IF_COPY(right, 1);
-
-	PG_RETURN_INT32(result);
-}
-
 PG_FUNCTION_INFO_V1(wrap_version_compare2);
 
 Datum
