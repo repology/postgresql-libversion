@@ -1,0 +1,44 @@
+name: CI
+on: [ push, pull_request ]
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - { libversion: master, postgresql: 11, cc: gcc }
+          # libversion versions
+          - { libversion: 3.0.1, postgresql: 11, cc: gcc }
+          - { libversion: 3.0.0, postgresql: 11, cc: gcc }
+          # compilers
+          - { libversion: master, postgresql: 11, cc: clang }
+          # postgresql versions
+          - { libversion: master, postgresql: 9.6, cc: gcc }
+          - { libversion: master, postgresql: 10, cc: gcc }
+          - { libversion: master, postgresql: 12, cc: gcc }
+          - { libversion: master, postgresql: 13, cc: gcc }
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install postgresql
+        run: |
+          sudo apt-get purge 'postgresql*' >/dev/null 2>&1 || true
+          sudo apt-get install postgresql-${{ matrix.postgresql }} postgresql-client-${{ matrix.postgresql }} postgresql-server-dev-${{ matrix.postgresql }}
+          sudo pg_ctlcluster ${{ matrix.postgresql }} main restart
+          sudo -u postgres createuser -s "$USER" || true
+      - name: Install libversion dependency
+        run: |
+          mkdir _libversion
+          cd _libversion
+          wget -qO- https://github.com/repology/libversion/archive/${{ matrix.libversion }}.tar.gz | tar -xzf- --strip-components 1
+          cmake .
+          make
+          sudo make install
+          sudo ldconfig
+      - name: Build
+        run: make CC=${{ matrix.cc }}
+      - name: Install
+        run: sudo make install
+      - name: Installcheck
+        run: |
+          make installcheck
+          if test -e regression.diffs; then cat regression.diffs; false; fi
