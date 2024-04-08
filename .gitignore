@@ -1,3 +1,4 @@
+libversion.bc
 libversion.o
 libversion.so
 regression.diffs
