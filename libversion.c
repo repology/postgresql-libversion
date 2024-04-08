@@ -31,6 +31,9 @@
 #include "access/hash.h"
 #include "utils/builtins.h"
 #include "utils/formatting.h"
+#if PG_MAJORVERSION_NUM >= 16
+#include "varatt.h"
+#endif
 
 #include <libversion/version.h>
 
