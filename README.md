@@ -46,6 +46,10 @@ SELECT '1.0'::versiontext = '1.0.0'::versiontext;
 
 ## Installation
 
+<a href="https://repology.org/project/postgresql-libversion/versions">
+    <img src="https://repology.org/badge/vertical-allrepos/postgresql-libversion.svg" alt="Packaging status" align="right">
+</a>
+
 The extension uses standard PostgreSQL Makefile infrastructure.
 
 Run
