@@ -2,25 +2,35 @@ name: CI
 on: [ push, pull_request ]
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - { libversion: master, postgresql: 11, cc: gcc }
+          - { libversion: master, postgresql: 16, cc: gcc }
           # libversion versions
-          - { libversion: 3.0.1, postgresql: 11, cc: gcc }
-          - { libversion: 3.0.0, postgresql: 11, cc: gcc }
+          - { libversion: 3.0.1, postgresql: 16, cc: gcc }
+          - { libversion: 3.0.0, postgresql: 16, cc: gcc }
           # compilers
-          - { libversion: master, postgresql: 11, cc: clang }
+          - { libversion: master, postgresql: 16, cc: clang }
           # postgresql versions
-          - { libversion: master, postgresql: 9.6, cc: gcc }
           - { libversion: master, postgresql: 10, cc: gcc }
+          - { libversion: master, postgresql: 11, cc: gcc }
           - { libversion: master, postgresql: 12, cc: gcc }
           - { libversion: master, postgresql: 13, cc: gcc }
+          - { libversion: master, postgresql: 14, cc: gcc }
+          - { libversion: master, postgresql: 15, cc: gcc }
+          - { libversion: master, postgresql: 16, cc: gcc }
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Setup postgresql repository
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          sudo sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
       - name: Install postgresql
         run: |
+          sudo apt-get update
           sudo apt-get purge 'postgresql*' >/dev/null 2>&1 || true
           sudo apt-get install postgresql-${{ matrix.postgresql }} postgresql-client-${{ matrix.postgresql }} postgresql-server-dev-${{ matrix.postgresql }}
           sudo pg_ctlcluster ${{ matrix.postgresql }} main restart
