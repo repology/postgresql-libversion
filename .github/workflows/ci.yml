@@ -8,6 +8,7 @@ jobs:
         include:
           - { libversion: master, postgresql: 16, cc: gcc }
           # libversion versions
+          - { libversion: 3.0.2, postgresql: 16, cc: gcc }
           - { libversion: 3.0.1, postgresql: 16, cc: gcc }
           - { libversion: 3.0.0, postgresql: 16, cc: gcc }
           # compilers
